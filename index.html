@@ -2,44 +2,80 @@
 <html>
 <head>
   <title>Distributor Greeting Generator</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
-    body { font-family: Arial; text-align: center; background:#f2f2f2; }
-    input { padding:8px; margin:5px; width:260px; }
-    button { padding:10px 20px; margin:10px; }
-    canvas { background:#fff; margin-top:15px; }
+    body {
+      font-family: Arial;
+      text-align: center;
+      background: #f2f2f2;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input {
+      padding: 8px;
+      width: 260px;
+      margin-top: 4px;
+    }
+    button {
+      padding: 10px 20px;
+      margin-top: 15px;
+      font-size: 16px;
+    }
+    canvas {
+      margin-top: 20px;
+      max-width: 100%;
+    }
   </style>
 </head>
 <body>
 
-<h2>New Year Greeting Creator</h2>
+<h2>Greeting Creator</h2>
 
-<input id="name" placeholder="Name" /><br>
-<input id="mobile" placeholder="Mobile Number" /><br>
-<input id="email" placeholder="Email ID" /><br>
-<input type="file" id="logo" accept="image/*" /><br>
+<label>Name</label>
+<input id="name">
+
+<label>Mobile Number</label>
+<input id="mobile">
+
+<label>Email ID</label>
+<input id="email">
+
+<label>Distributor Photo (Optional)</label>
+<input type="file" id="photo" accept="image/*">
+
+<label>Logo (Optional)</label>
+<input type="file" id="logo" accept="image/*">
 
 <button onclick="generate()">Generate Image</button>
 
-<br><br>
+<br>
 <canvas id="canvas"></canvas>
 
 <br><br>
-<a id="download" download="NewYearGreeting.png">⬇ Download Image</a>
+<a id="download" download="Greeting.png">⬇ Download Image</a>
 
 <script>
-const baseImg = new Image();
-baseImg.src = "base.jpg";
-
 const canvas = document.getElementById("canvas");
 const ctx = canvas.getContext("2d");
 
-baseImg.onload = () => {
+const baseImg = new Image();
+baseImg.src = "base.jpeg";
+
+baseImg.onload = function () {
   canvas.width = baseImg.width;
-  canvas.height = baseImg.height + 200;
+  canvas.height = baseImg.height + 220;
   ctx.drawImage(baseImg, 0, 0);
 };
 
 function generate() {
+  if (!baseImg.complete) {
+    alert("Please wait 2 seconds and try again");
+    return;
+  }
+
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   ctx.drawImage(baseImg, 0, 0);
 
@@ -49,8 +85,8 @@ function generate() {
   const photoFile = document.getElementById("photo").files[0];
   const logoFile = document.getElementById("logo").files[0];
 
-  const extraHeight = 220;
   const baseY = baseImg.height;
+  const extraHeight = 220;
 
   const gradient = ctx.createLinearGradient(0, baseY, 0, baseY + extraHeight);
   gradient.addColorStop(0, "#0f4c81");
@@ -59,26 +95,23 @@ function generate() {
   ctx.fillStyle = gradient;
   ctx.fillRect(0, baseY, canvas.width, extraHeight);
 
-  const textX = 40;
-  let textY = baseY + 45;
-
-  ctx.fillStyle = "#ffffff";
+  ctx.fillStyle = "#fff";
   ctx.textAlign = "left";
 
   ctx.font = "30px Arial";
-  ctx.fillText(name, textX, textY);
+  ctx.fillText(name, 40, baseY + 45);
 
   ctx.font = "24px Arial";
-  ctx.fillText("Mutual Fund Distributor", textX, textY + 35);
+  ctx.fillText("Mutual Fund Distributor", 40, baseY + 80);
 
   ctx.font = "22px Arial";
-  ctx.fillText("📞 " + mobile, textX, textY + 80);
-  ctx.fillText("✉️ " + email, textX, textY + 120);
+  ctx.fillText("📞 " + mobile, 40, baseY + 120);
+  ctx.fillText("✉️ " + email, 40, baseY + 160);
 
   if (photoFile) {
     const photoImg = new Image();
     photoImg.onload = function () {
-      ctx.drawImage(photoImg, canvas.width - 160, baseY + 40, 120, 120);
+      ctx.drawImage(photoImg, canvas.width - 160, baseY + 50, 120, 120);
       drawLogo();
     };
     photoImg.src = URL.createObjectURL(photoFile);
@@ -103,3 +136,4 @@ function generate() {
 
 </body>
 </html>
+
