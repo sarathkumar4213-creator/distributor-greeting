@@ -46,33 +46,57 @@ function generate() {
   const name = document.getElementById("name").value;
   const mobile = document.getElementById("mobile").value;
   const email = document.getElementById("email").value;
+  const photoFile = document.getElementById("photo").files[0];
   const logoFile = document.getElementById("logo").files[0];
 
+  const extraHeight = 220;
+  const baseY = baseImg.height;
+
+  const gradient = ctx.createLinearGradient(0, baseY, 0, baseY + extraHeight);
+  gradient.addColorStop(0, "#0f4c81");
+  gradient.addColorStop(1, "#a31621");
+
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0, baseY, canvas.width, extraHeight);
+
+  const textX = 40;
+  let textY = baseY + 45;
+
   ctx.fillStyle = "#ffffff";
-  ctx.fillRect(0, baseImg.height, canvas.width, 200);
+  ctx.textAlign = "left";
 
-  ctx.fillStyle = "#000";
-  ctx.textAlign = "center";
-
-  ctx.font = "28px Arial";
-  ctx.fillText(name, canvas.width/2, baseImg.height + 40);
-
-  ctx.font = "22px Arial";
-  ctx.fillText(mobile, canvas.width/2, baseImg.height + 80);
-  ctx.fillText(email, canvas.width/2, baseImg.height + 120);
+  ctx.font = "30px Arial";
+  ctx.fillText(name, textX, textY);
 
   ctx.font = "24px Arial";
-  ctx.fillText("Mutual Funds Distributor", canvas.width/2, baseImg.height + 165);
+  ctx.fillText("Mutual Fund Distributor", textX, textY + 35);
 
-  if (logoFile) {
-    const logoImg = new Image();
-    logoImg.onload = () => {
-      ctx.drawImage(logoImg, 20, 20, 120, 120);
-      document.getElementById("download").href = canvas.toDataURL();
+  ctx.font = "22px Arial";
+  ctx.fillText("📞 " + mobile, textX, textY + 80);
+  ctx.fillText("✉️ " + email, textX, textY + 120);
+
+  if (photoFile) {
+    const photoImg = new Image();
+    photoImg.onload = function () {
+      ctx.drawImage(photoImg, canvas.width - 160, baseY + 40, 120, 120);
+      drawLogo();
     };
-    logoImg.src = URL.createObjectURL(logoFile);
+    photoImg.src = URL.createObjectURL(photoFile);
   } else {
-    document.getElementById("download").href = canvas.toDataURL();
+    drawLogo();
+  }
+
+  function drawLogo() {
+    if (logoFile) {
+      const logoImg = new Image();
+      logoImg.onload = function () {
+        ctx.drawImage(logoImg, 20, 20, 120, 120);
+        document.getElementById("download").href = canvas.toDataURL();
+      };
+      logoImg.src = URL.createObjectURL(logoFile);
+    } else {
+      document.getElementById("download").href = canvas.toDataURL();
+    }
   }
 }
 </script>
