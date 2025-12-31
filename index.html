@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Distributor Greeting Generator</title>
+  <style>
+    body { font-family: Arial; text-align: center; background:#f2f2f2; }
+    input { padding:8px; margin:5px; width:260px; }
+    button { padding:10px 20px; margin:10px; }
+    canvas { background:#fff; margin-top:15px; }
+  </style>
+</head>
+<body>
+
+<h2>New Year Greeting Creator</h2>
+
+<input id="name" placeholder="Name" /><br>
+<input id="mobile" placeholder="Mobile Number" /><br>
+<input id="email" placeholder="Email ID" /><br>
+<input type="file" id="logo" accept="image/*" /><br>
+
+<button onclick="generate()">Generate Image</button>
+
+<br><br>
+<canvas id="canvas"></canvas>
+
+<br><br>
+<a id="download" download="NewYearGreeting.png">⬇ Download Image</a>
+
+<script>
+const baseImg = new Image();
+baseImg.src = "base.jpg";
+
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+baseImg.onload = () => {
+  canvas.width = baseImg.width;
+  canvas.height = baseImg.height + 200;
+  ctx.drawImage(baseImg, 0, 0);
+};
+
+function generate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(baseImg, 0, 0);
+
+  const name = document.getElementById("name").value;
+  const mobile = document.getElementById("mobile").value;
+  const email = document.getElementById("email").value;
+  const logoFile = document.getElementById("logo").files[0];
+
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, baseImg.height, canvas.width, 200);
+
+  ctx.fillStyle = "#000";
+  ctx.textAlign = "center";
+
+  ctx.font = "28px Arial";
+  ctx.fillText(name, canvas.width/2, baseImg.height + 40);
+
+  ctx.font = "22px Arial";
+  ctx.fillText(mobile, canvas.width/2, baseImg.height + 80);
+  ctx.fillText(email, canvas.width/2, baseImg.height + 120);
+
+  ctx.font = "24px Arial";
+  ctx.fillText("Mutual Funds Distributor", canvas.width/2, baseImg.height + 165);
+
+  if (logoFile) {
+    const logoImg = new Image();
+    logoImg.onload = () => {
+      ctx.drawImage(logoImg, 20, 20, 120, 120);
+      document.getElementById("download").href = canvas.toDataURL();
+    };
+    logoImg.src = URL.createObjectURL(logoFile);
+  } else {
+    document.getElementById("download").href = canvas.toDataURL();
+  }
+}
+</script>
+
+</body>
+</html>
